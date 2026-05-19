@@ -1,0 +1,39 @@
+﻿name: 📦 Publish module to PowerShell Gallery
+on:
+  push:
+    tags:
+      - v[0-9]*
+permissions:
+  contents: write
+jobs:
+  on-success:
+    name: 🆙 Release new version
+    runs-on: windows-latest
+    steps:
+      - name: 📥 Check out script source
+        uses: actions/checkout@v6
+      - name: 🏭 Build module
+        id: build
+        run: ./scripts/Build-Module.ps1
+      - name: 🏷️ Create release
+        id: release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: 📝 Generate wiki pages
+        id: docs
+        run: ./scripts/Write-Wiki.ps1
+      - name: 📮 Publish wiki
+        id: wiki
+        uses: spenserblack/actions-wiki@v0.3.0
+      - name: 📤 Publish module
+        id: publish
+        env:
+            GALLERYKEY: ${{ secrets.gallerykey }}
+            MODULEVERSION: ${{ github.ref }}
+        run: ./scripts/Publish-ThisModule.ps1

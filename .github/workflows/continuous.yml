@@ -1,0 +1,45 @@
+﻿name: 🩺 Continuous integration
+on:
+  push:
+    branches: [main]
+    paths: ['src/**','test/**']
+  pull_request:
+    types: [opened, reopened]
+    branches: [main]
+    paths: ['src/**','test/**']
+  workflow_dispatch: {}
+defaults:
+  run:
+    shell: pwsh
+permissions:
+  contents: read
+jobs:
+  test:
+    name: 🧪 Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    permissions:
+      contents: read # for actions/checkout to fetch code
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+      actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+    steps:
+      - name: 📥 Check out script source
+        uses: actions/checkout@v6
+      - name: 🏭 Build module
+        id: build
+        run: ./scripts/Build-Module.ps1
+      - name: 🔬 Analyze module style
+        uses: microsoft/psscriptanalyzer-action@v1.0
+        with:
+          settings: PSGallery
+          output: analysis.sarif
+      - name: ⚗️ Test module
+        id: test
+        run: Invoke-Pester -Configuration @{TestResult=@{Enabled=$true}}
+      - name: 📤 Upload test results
+        uses: actions/upload-artifact@v7
+        with:
+          name: Pester test results for ${{ matrix.os }}
+          path: ./testResults.xml
