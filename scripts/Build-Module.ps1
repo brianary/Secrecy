@@ -30,7 +30,7 @@ $(Get-Content $FullName -Raw)
         $public = Get-Item public/*.ps1
 		$psm1 = [path]::ChangeExtension((Resolve-Path .publish/*.psd1),'psm1')
         return @"
-$(Get-Item private/*.ps1 |Format-Function)
+$(Get-Item private/*.ps1 -ErrorAction Ignore |Format-Function)
 $($public |Format-Function)
 Export-ModuleMember -Function $($public.BaseName -join ',')
 "@ |Out-File $psm1 utf8BOM

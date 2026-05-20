@@ -9,7 +9,11 @@
 [![Actions Status](https://github.com/brianary/Secrecy/actions/workflows/continuous.yml/badge.svg)](https://github.com/brianary/Secrecy/actions/workflows/continuous.yml)
 [![Mastodon: @dataelemental@mastodon.social](https://badgen.net/badge/@dataelemental/@mastodon.social/blue?icon=mastodon)](https://mastodon.social/@dataelemental "DataElemental Mastodon profile")
 
-A collection of general-purpose functions for objects, properties, and more.
+Secret storage manipulation utilities.
 
 <img src="images/demo.gif" alt="a demonstration of the module commands" height="300" width="600" />
 
+- [Export-SecretVault](https://github.com/brianary/Secrecy/wiki/Export-SecretVault): Exports secret vault content.
+- [Get-SecretDetails](https://github.com/brianary/Secrecy/wiki/Get-SecretDetails): Returns secret info from the secret vaults, including metadata as properties.
+- [Import-SecretVault](https://github.com/brianary/Secrecy/wiki/Import-SecretVault): Imports secrets into secret vaults.
+- [Save-Secret](https://github.com/brianary/Secrecy/wiki/Save-Secret): Sets a secret in a secret vault with metadata.
