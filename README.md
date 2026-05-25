@@ -11,6 +11,8 @@
 
 Secret storage manipulation utilities.
 
+**Requirements:** Modules Microsoft.PowerShell.SecretManagement and Microsoft.PowerShell.SecretStore.
+
 <img src="images/demo.gif" alt="a demonstration of the module commands" height="300" width="600" />
 
 - [Export-SecretVault](https://github.com/brianary/Secrecy/wiki/Export-SecretVault): Exports secret vault content.

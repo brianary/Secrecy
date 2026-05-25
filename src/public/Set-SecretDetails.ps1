@@ -6,7 +6,7 @@ Sets a secret in a secret vault with metadata.
 Credential
 
 .EXAMPLE
-Save-Secret GitHubToken -Paste securestring -Title 'PowerShell token' -Description 'A GitHub classic token' -Url https://github.com/settings/tokens -Expires (Get-Date).AddDays(90)
+Set-SecretDetails GitHubToken -Paste securestring -Title 'PowerShell token' -Description 'A GitHub classic token' -Url https://github.com/settings/tokens -Expires (Get-Date).AddDays(90)
 
 Stores the token from the clipboard.
 #>
