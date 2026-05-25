@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Returns secret info from the secret vaults, including metadata as properties.
 
@@ -14,7 +14,7 @@ Optional parameter which takes a String argument that specifies a single vault t
 Credential
 
 .EXAMPLE
-Get-SecretDetails.ps1
+Get-SecretDetails
 
 Name        : test-creds
 Type        : PSCredential
@@ -27,13 +27,11 @@ Created     : 2024-12-31 00:00:00
 Expires     : 2036-01-01 00:00:00
 #>
 
-#Requires -Version 7
-#Requires -Modules Microsoft.PowerShell.SecretManagement,Microsoft.PowerShell.SecretStore
 [CmdletBinding()] Param()
 DynamicParam
 {
-    Get-SecretInfo |Select-Object -ExpandProperty Name |Add-DynamicParam.ps1 Name string -Position 0
-    Get-SecretVault |Select-Object -ExpandProperty Name |Add-DynamicParam.ps1 Vault string -Position 0
+    Get-SecretInfo |Select-Object -ExpandProperty Name |Add-DynamicParam Name string -Position 0
+    Get-SecretVault |Select-Object -ExpandProperty Name |Add-DynamicParam Vault string -Position 1
     $DynamicParams
 }
 Process

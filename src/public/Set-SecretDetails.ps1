@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Sets a secret in a secret vault with metadata.
 
@@ -6,13 +6,11 @@ Sets a secret in a secret vault with metadata.
 Credential
 
 .EXAMPLE
-Save-Secret.ps1 GitHubToken -Paste securestring -Title 'PowerShell token' -Description 'A GitHub classic token' -Url https://github.com/settings/tokens -Expires (Get-Date).AddDays(90)
+Save-Secret GitHubToken -Paste securestring -Title 'PowerShell token' -Description 'A GitHub classic token' -Url https://github.com/settings/tokens -Expires (Get-Date).AddDays(90)
 
 Stores the token from the clipboard.
 #>
 
-#Requires -Version 7
-#Requires -Modules Microsoft.PowerShell.SecretManagement,Microsoft.PowerShell.SecretStore
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText','',
 Justification='The data source is plaintext. SecureString benefits may be in dispute: <https://github.com/dotnet/platform-compat/blob/master/docs/DE0001.md>')]
 [CmdletBinding()] Param(
@@ -49,7 +47,7 @@ $value = switch($PSCmdlet.ParameterSetName)
     PasteTextBytes {$PasteTextBytes.GetBytes($clipboard)}
     Secret {$Secret}
     Credential {$Credential}
-    Paste 
+    Paste
     {
         switch($Paste)
         {

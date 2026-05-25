@@ -20,13 +20,11 @@ Credential
 https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-are-generally-available/
 
 .EXAMPLE
-Get-Content ~/secrets.json |ConvertFrom-Json |Import-SecretVault.ps1
+Get-Content ~/secrets.json |ConvertFrom-Json |Import-SecretVault
 
 Restores secrets to vaults.
 #>
 
-#Requires -Version 7
-#Requires -Modules Microsoft.PowerShell.SecretStore,Microsoft.PowerShell.SecretManagement
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText','',
 Justification='This script exports secrets.')]
 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingPlainTextForPassword','',
@@ -57,7 +55,7 @@ Process
 	{
 		Register-SecretVault -Name $Vault -ModuleName Microsoft.PowerShell.SecretStore
 	}
-	$meta = @($Metadata.PSObject.Properties).Count ? @{Metadata=ConvertTo-OrderedDictionary.ps1 $Metadata} : @{}
+	$meta = @($Metadata.PSObject.Properties).Count ? @{Metadata=$Metadata |ConvertTo-Json |ConvertFrom-Json -AsHashtable} : @{}
 	foreach($k in $meta.Keys) {if($meta[$k] -is [long]){$meta[$k] = [int]$meta[$k]}}
 	switch($Type)
 	{
@@ -65,7 +63,7 @@ Process
 		String {Set-Secret $Name $Value -Vault $Vault @meta}
 		SecureString {Set-Secret $Name (ConvertTo-SecureString $Value -AsPlainText -Force) -Vault $Vault @meta}
 		PSCredential {Set-Secret $Name ($Value |ConvertTo-Credential) -Vault $Vault @meta}
-		Hashtable {Set-Secret $Name (ConvertTo-OrderedDictionary.ps1 $Value) -Vault $Vault @meta} # not yet supported
+		#Hashtable {Set-Secret $Name ($Value |ConvertTo-Json |ConvertFrom-Json -AsHashtable) -Vault $Vault @meta} # not yet supported
 		default {Set-Secret $Name $Value -Vault $Vault @meta}
 	}
 }

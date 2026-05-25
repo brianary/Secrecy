@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Exports secret vault content.
 
@@ -16,13 +16,11 @@ Credential
 https://devblogs.microsoft.com/powershell/secretmanagement-and-secretstore-are-generally-available/
 
 .EXAMPLE
-Export-SecretVault.ps1 |ConvertTo-Json |Out-File ~/secrets.json utf8
+Export-SecretVault |ConvertTo-Json |Out-File ~/secrets.json utf8
 
 Backs up all secrets to a JSON file.
 #>
 
-#Requires -Version 7
-#Requires -Modules Microsoft.PowerShell.SecretManagement
 [CmdletBinding(ConfirmImpact='High',SupportsShouldProcess=$true)] Param()
 
 filter Export-Credential
