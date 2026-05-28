@@ -43,7 +43,6 @@ Describe 'Export-SecretVault' -Tag Export-SecretVault {
 	}
 	Context 'Exports secret vault content' -Tag Export-SecretVault,Export,SecretVault {
 		It "Returns the contents of the default vault" {
-			#Export-SecretVault -Confirm:$false |ConvertTo-Json -Depth 100 |Write-Information -infa Continue
 			Export-SecretVault -Confirm:$false |ConvertTo-Json -Depth 100 -AsArray |Should -BeExactly (@"
 [
   {
