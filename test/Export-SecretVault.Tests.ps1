@@ -3,46 +3,48 @@
 Tests exporting secret vault content.
 #>
 
-$basename = "$(($MyInvocation.MyCommand.Name -split '\.',2)[0])."
-$skip = !(Test-Path .changes -Type Leaf) ? $false :
-	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |Where-Object {$_.StartsWith($basename)})
-if($skip) {Write-Information "No changes to $basename" -infa Continue}
-Describe 'Export-SecretVault' -Tag Export-SecretVault -Skip:$skip {
-	BeforeAll {
-		if(!(Get-Module -List Microsoft.PowerShell.SecretManagement)) {Install-Module Microsoft.PowerShell.SecretManagement -Force}
-		$scriptsdir,$sep = (Split-Path $PSScriptRoot),[io.path]::PathSeparator
-		if($scriptsdir -notin ($env:Path -split $sep)) {$env:Path += "$sep$scriptsdir"}
+if((Test-Path .changes -Type Leaf) -and
+	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |
+		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
+BeforeAll {
+	Set-StrictMode -Version Latest
+	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
+	Import-Module $module -Force
+}
+Describe 'Export-SecretVault' -Tag Export-SecretVault {
+	BeforeEach {
+		# see https://pester.dev/docs/usage/modules#-modulename
+		Mock Get-SecretInfo -ModuleName Secrecy {
+			$values = New-Object 'Collections.Generic.Dictionary[string,object]'
+			[pscustomobject]@{
+				Name     = 'MockCredentials'
+				Type     = 'PSCredential'
+				Vault    = 'MockVault'
+				Metadata = New-Object 'Collections.ObjectModel.ReadOnlyDictionary[string,object]' $values
+			}
+			$values.Add('Url','https://example.net/')
+			$values.Add('Usage','Authorization: Bearer <token>')
+			$values.Add('Description','API token A1')
+			$values.Add('Expires','2024-08-16')
+			[pscustomobject]@{
+				Name     = 'MockToken'
+				Type     = 'String'
+				Vault    = 'MockVault'
+				Metadata = New-Object 'Collections.ObjectModel.ReadOnlyDictionary[string,object]' $values
+			}
+		}
+		Mock Get-Secret -ModuleName Secrecy {
+			switch($Name)
+			{
+				MockCredentials {[pscustomobject]@{UserName='mockuser';Password='123456' |ConvertTo-SecureString -AsPlainText -Force}}
+				MockToken {'token_1234'}
+			}
+		}
 	}
-	Context 'Exports secret vault content' -Tag ExportSecretVault,Export,SecretVault {
+	Context 'Exports secret vault content' -Tag Export-SecretVault,Export,SecretVault {
 		It "Returns the contents of the default vault" {
-			Mock Get-SecretInfo {
-				$values = New-Object 'Collections.Generic.Dictionary[string,object]'
-				[pscustomobject]@{
-					Name     = 'MockCredentials'
-					Type     = 'PSCredential'
-					Vault    = 'MockVault'
-					Metadata = New-Object 'Collections.ObjectModel.ReadOnlyDictionary[string,object]' $values
-				}
-				$values.Add('Url','https://example.net/')
-				$values.Add('Usage','Authorization: Bearer <token>')
-				$values.Add('Description','API token A1')
-				$values.Add('Expires','2024-08-16')
-				[pscustomobject]@{
-					Name     = 'MockToken'
-					Type     = 'String'
-					Vault    = 'MockVault'
-					Metadata = New-Object 'Collections.ObjectModel.ReadOnlyDictionary[string,object]' $values
-				}
-			}
-			Mock Get-Secret {
-				switch($Name)
-				{
-					MockCredentials {[pscustomobject]@{UserName='mockuser';Password='123456' |ConvertTo-SecureString -AsPlainText -Force}}
-					MockToken {'token_1234'}
-				}
-			}
-			#Export-SecretVault.ps1 -Confirm:$false |ConvertTo-Json -Depth 100 |Write-Information -infa Continue
-			Export-SecretVault.ps1 -Confirm:$false |ConvertTo-Json -Depth 100 |Should -BeExactly @"
+			#Export-SecretVault -Confirm:$false |ConvertTo-Json -Depth 100 |Write-Information -infa Continue
+			Export-SecretVault -Confirm:$false |ConvertTo-Json -Depth 100 -AsArray |Should -BeExactly (@"
 [
   {
     "Name": "MockCredentials",
@@ -72,8 +74,11 @@ Describe 'Export-SecretVault' -Tag Export-SecretVault -Skip:$skip {
     }
   }
 ]
-"@
+"@ -replace '\r\n',([Environment]::NewLine))
 		}
 	}
 
+}
+AfterAll {
+	Remove-Module $module.BaseName -Force
 }
