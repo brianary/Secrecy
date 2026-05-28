@@ -17,7 +17,16 @@ Process
 {
 	$ModuleName = Get-Item src/*.psd1 |Split-Path -LeafBase
 	& './scripts/Build-Module.ps1'
-	Import-Module (Get-Item src/.publish/*.psd1)
+	$psd1 = Get-Item src/.publish/*.psd1
+	Import-Module $psd1
+	$manifest = Test-ModuleManifest $psd1.FullName
+	if($manifest.RequiredModules)
+	{
+		$manifest.RequiredModules.Name |ForEach-Object {
+			Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore
+			Import-Module $_
+		}
+	}
 	New-MarkdownHelp -Module $ModuleName -OutputFolder .github/wiki -ErrorAction Ignore
 }
 Clean {Pop-Location}
