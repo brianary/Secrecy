@@ -9,6 +9,9 @@ if((Test-Path .changes -Type Leaf) -and
 BeforeAll {
 	Set-StrictMode -Version Latest
 	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
+	Install-PSResource Microsoft.PowerShell.SecretManagement,Microsoft.PowerShell.SecretStore `
+		-Scope CurrentUser -Repository PSGallery -TrustRepository
+	Import-Module Microsoft.PowerShell.SecretManagement,Microsoft.PowerShell.SecretStore
 	Import-Module $module -Force
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {
