@@ -20,6 +20,7 @@ BeforeAll {
 		}
 	}
 	Get-Module -ListAvailable |Out-File output.txt utf8BOM -Append
+	throw "$(Get-Content output.txt -Raw)"
 	Import-Module $module -Force
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {
