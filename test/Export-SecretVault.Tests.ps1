@@ -3,10 +3,10 @@
 Tests exporting secret vault content.
 #>
 
-if(!(&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Test-RelevantTest.ps1))) {return}
+if(!(&"$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
-	&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Import-ThisModule.ps1)
+	&"$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {
 	BeforeEach {
@@ -76,5 +76,5 @@ Describe 'Export-SecretVault' -Tag Export-SecretVault {
 
 }
 AfterAll {
-	&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Remove-ThisModule.ps1)
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }
