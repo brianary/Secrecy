@@ -8,25 +8,9 @@ if((Test-Path .changes -Type Leaf) -and
 		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
-	@"
-Test
-====
-
-Before
-------
-
-``````output
-"@ |Out-File "$env:GITHUB_STEP_SUMMARY" utf8BOM -Append
-	Get-Module -ListAvailable |Out-File "$env:GITHUB_STEP_SUMMARY" utf8BOM -Append
-	@"
-``````
-
-After
------
-
-``````output
-"@ |Out-File "$env:GITHUB_STEP_SUMMARY" utf8BOM -Append
+	Get-Module -ListAvailable |% {"::warning::$($_.ModuleBase)"}
 	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
+	"::warning::___SETUP___"
 	$manifest = Test-ModuleManifest $module.FullName
 	if($manifest.RequiredModules)
 	{
@@ -35,10 +19,7 @@ After
 			Import-Module $_
 		}
 	}
-	Get-Module -ListAvailable |Out-File "$env:GITHUB_STEP_SUMMARY" utf8BOM -Append
-	@"
-``````
-"@ |Out-File "$env:GITHUB_STEP_SUMMARY" utf8BOM -Append
+	Get-Module -ListAvailable |% {"::warning::$($_.ModuleBase)"}
 	Import-Module $module -Force
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {
