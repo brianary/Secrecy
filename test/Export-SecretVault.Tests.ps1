@@ -3,21 +3,10 @@
 Tests exporting secret vault content.
 #>
 
-if((Test-Path .changes -Type Leaf) -and
-	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |
-		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
+if(!(&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Test-RelevantTest.ps1))) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
-	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
-	$manifest = Import-PowerShellDataFile $module.FullName
-	if($manifest.RequiredModules)
-	{
-		$manifest.RequiredModules |ForEach-Object {
-			Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore
-			Import-Module $_
-		}
-	}
-	Import-Module $module -Force
+	&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Import-ThisModule.ps1)
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {
 	BeforeEach {
@@ -87,5 +76,5 @@ Describe 'Export-SecretVault' -Tag Export-SecretVault {
 
 }
 AfterAll {
-	Remove-Module $module.BaseName -Force
+	&($PSScriptRoot |Split-Path |Join-Path -ChildPath scripts,Remove-ThisModule.ps1)
 }

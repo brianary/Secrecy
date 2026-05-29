@@ -27,18 +27,18 @@ $(Get-Content $FullName -Raw)
     {
         [CmdletBinding()] Param()
         $Local:OFS = [Environment]::NewLine
-        $public = Get-Item public/*.ps1
-		$psm1 = [path]::ChangeExtension((Resolve-Path .publish/*.psd1),'psm1')
+        $public = Join-Path src public *.ps1 |Get-Item
+		$psm1 = [path]::ChangeExtension((Join-Path .publish *.psd1 |Resolve-Path),'psm1')
         return @"
-$(Get-Item private/*.ps1 -ErrorAction Ignore |Format-Function)
+$(Join-Path src private *.ps1 |Get-Item -ErrorAction Ignore |Format-Function)
 $($public |Format-Function)
 Export-ModuleMember -Function $($public.BaseName -join ',')
 "@ |Out-File $psm1 utf8BOM
     }
 
-	Push-Location "$PSScriptRoot/../src"
+	$PSScriptRoot |Split-Path |Push-Location
 	New-Item .publish -Type Directory -ErrorAction Ignore |Out-Null
-	Copy-Item *.psd1 .publish
+	Copy-Item (Join-Path src *.psd1) .publish
 }
 Process
 {

@@ -29,7 +29,7 @@ jobs:
         uses: actions/checkout@v6
       - name: 🏭 Build module
         id: build
-        run: ./scripts/Build-Module.ps1
+        run: ./scripts/Build-ThisModule.ps1
       - name: 🔬 Analyze module style
         uses: microsoft/psscriptanalyzer-action@v1.0
         with:

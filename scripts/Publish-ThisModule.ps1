@@ -11,7 +11,7 @@ Publishes the module if it has been updated.
 )
 Process
 {
-	Push-Location "$PSScriptRoot/../src/.publish"
+	$PSScriptRoot |Split-Path |Join-Path -ChildPath .publish |Push-Location
 	$name = Get-Item *.psd1 |Test-ModuleManifest |Select-Object -ExpandProperty Name
 	[version] $publishedVersion = (Find-PSResource -Name $name -Repository PSGallery -ErrorAction Ignore |
 		Select-Object -ExpandProperty Version) ?? '0.0.0.0'

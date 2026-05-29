@@ -7,13 +7,14 @@ Updates the README.md file with the list of public cmdlets.
 [CmdletBinding()] Param()
 Begin
 {
-	Push-Location "$PSScriptRoot/.."
+	$PSScriptRoot |Split-Path |Push-Location
 }
 Process
 {
-	$ModuleName = Get-Item src/*.psd1 |Split-Path -LeafBase
+	$ModuleName = Join-Path src *.psd1 |Get-Item |Split-Path -LeafBase
 	$readme = Get-Content README.md -Raw
-	$cmdlets = (Get-Item src/public/*.ps1 |
+	$cmdlets = (Join-Path src public *.ps1 |
+		Get-Item |
 		Show-Progress 'Listing cmdlets' {$_.BaseName} |
 		ForEach-Object {
 			$cmdlet,$file = $_.BaseName,$_.FullName

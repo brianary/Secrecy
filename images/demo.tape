@@ -2,7 +2,7 @@
 Output demo.gif
 Hide
 Set Shell pwsh
-Type "Import-Module ../src/.publish/Secrecy.psd1"
+Type "../scripts/Import-ThisModule.ps1"
 Enter
 Type "; $apikey = '████████████████' |ConvertTo-SecureString -AsPlainText"
 Enter
@@ -15,6 +15,9 @@ Sleep 1s
 Type "Get-SecretDetails ApiKey"
 Enter
 Sleep 3s
-Type "Export-SecretVault -Confirm:$false |ConvertTo-Json"
+Type "Export-SecretVault |ConvertTo-Json"
+Enter
+Type "y"
+Sleep 2s
 Enter
 Sleep 5s
