@@ -8,6 +8,7 @@ if((Test-Path .changes -Type Leaf) -and
 		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
+	Get-Module -ListAvailable |Out-String |Write-Information
 	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
 	$manifest = Test-ModuleManifest $module.FullName
 	if($manifest.RequiredModules)
