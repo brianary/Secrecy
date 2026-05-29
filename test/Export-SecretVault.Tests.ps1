@@ -8,18 +8,15 @@ if((Test-Path .changes -Type Leaf) -and
 		Where-Object {$_.StartsWith("$(($MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
-	Get-Module -ListAvailable |% {Write-Information "::warning::$($_.ModuleBase)"}
 	$module = Join-Path ($PSScriptRoot |Split-Path) src .publish *.psd1 |Get-Item
-	Write-Information "::warning::___SETUP___"
-	$manifest = Test-ModuleManifest $module.FullName
+	$manifest = Import-PowerShellDataFile $module.FullName
 	if($manifest.RequiredModules)
 	{
-		$manifest.RequiredModules.Name |ForEach-Object {
+		$manifest.RequiredModules |ForEach-Object {
 			Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore
 			Import-Module $_
 		}
 	}
-	Get-Module -ListAvailable |% {Write-Information "::warning::$($_.ModuleBase)"}
 	Import-Module $module -Force
 }
 Describe 'Export-SecretVault' -Tag Export-SecretVault {

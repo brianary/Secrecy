@@ -42,6 +42,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Pester test results for ${{ matrix.os }}
-          path: |
-            ./testResults.xml
-            ./output.txt
+          path: ./testResults.xml
