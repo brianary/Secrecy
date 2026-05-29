@@ -7,7 +7,7 @@ Unloads this repository's module.
 [CmdletBinding()] Param()
 $PSScriptRoot |
 	Split-Path |
-	Join-Path -ChildPath .publish,*.psd1 |
+	Join-Path -ChildPath .publish -AdditionalChildPath *.psd1 |
 	Get-Item |
 	Split-Path -LeafBase |
 	Remove-Module -Force

@@ -7,11 +7,11 @@ Imports this repository's module, installing and importing required modules firs
 [CmdletBinding()] Param()
 if(!($PSScriptRoot |Split-Path |Join-Path -ChildPath .publish |Test-Path -Type Container))
 {
-	$name = $PSScriptRoot |Split-Path |Join-Path -ChildPath src,*.psd1 |Split-Path -LeafBase
+	$name = $PSScriptRoot |Split-Path |Join-Path -ChildPath src -AdditionalChildPath *.psd1 |Split-Path -LeafBase
 	if(Get-Module $name) {Remove-Module $name -Force}
 	& (Join-Path $PSScriptRoot Build-ThisModule.ps1)
 }
-$module = $PSScriptRoot |Split-Path |Join-Path -ChildPath .publish,*.psd1 |Get-Item
+$module = $PSScriptRoot |Split-Path |Join-Path -ChildPath .publish -AdditionalChildPath *.psd1 |Get-Item
 $manifest = Import-PowerShellDataFile $module.FullName
 if($manifest.RequiredModules)
 {
