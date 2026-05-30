@@ -24,7 +24,7 @@ Process
 	else
 	{
 		Update-ModuleManifest -Path *.psd1 -ModuleVersion $ModuleVersion -FunctionsToExport (
-			Get-Item ../public/*.ps1 |Split-Path -LeafBase)
+			Join-Path .. src public *.ps1 |Get-Item |Split-Path -LeafBase)
 		# see bug https://github.com/PowerShell/PSResourceGet/issues/1806#issuecomment-2992975199
 		Get-PSResourceRepository -Name PSGallery
 		Publish-PSResource -Path *.psd1 -Repository PSGallery -ApiKey $GalleryKey
