@@ -18,7 +18,7 @@ Process
 	$ModuleName = Join-Path src *.psd1 |Get-Item |Split-Path -LeafBase
 	& (Join-Path scripts Build-ThisModule.ps1)
 	$psd1 = Join-Path .publish *.psd1 |Get-Item
-	Import-Module $psd1
+	& (Join-Path scripts Import-ThisModule.ps1)
 	$manifest = Test-ModuleManifest $psd1.FullName
 	if($manifest.RequiredModules)
 	{
