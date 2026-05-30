@@ -73,13 +73,10 @@ $('"@')
 Tests $Synopsis
 #>
 
-if((Test-Path .changes -Type Leaf) -and
-	!@(Get-Content .changes |Get-Item |Select-Object -ExpandProperty Name |
-		Where-Object {`$_.StartsWith("`$((`$MyInvocation.MyCommand.Name -split '\.',2)[0]).")})) {return}
+if(!(&"`$PSScriptRoot/../scripts/Test-RelevantTest.ps1")) {return}
 BeforeAll {
 	Set-StrictMode -Version Latest
-	`$module = Join-Path (`$PSScriptRoot |Split-Path) .publish *.psd1 |Get-Item
-	Import-Module `$module -Force
+	&"`$PSScriptRoot/../scripts/Import-ThisModule.ps1"
 }
 Describe '$Name' -Tag $Name,$($Name -replace '-',',') {
 	Context '$($Synopsis -replace "'","''")' -Tag Example {
@@ -88,7 +85,7 @@ $($Examples.example |Format-ExampleTest)
 $($CmdInfo.ParameterSets |Where-Object Name -ne __AllParameterSets |Format-ParameterSetContext)
 }
 AfterAll {
-	Remove-Module `$module.BaseName -Force
+	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }
 "@
 	}
