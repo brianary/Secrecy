@@ -18,4 +18,5 @@ Secret storage manipulation utilities.
 - [Export-SecretVault](https://github.com/brianary/Secrecy/wiki/Export-SecretVault): Exports secret vault content.
 - [Get-SecretDetails](https://github.com/brianary/Secrecy/wiki/Get-SecretDetails): Returns secret info from the secret vaults, including metadata as properties.
 - [Import-SecretVault](https://github.com/brianary/Secrecy/wiki/Import-SecretVault): Imports secrets into secret vaults.
+- [Initialize-SecretVault](https://github.com/brianary/Secrecy/wiki/Initialize-SecretVault): Sets up secret storage for the first time.
 - [Set-SecretDetails](https://github.com/brianary/Secrecy/wiki/Set-SecretDetails): Sets a secret in a secret vault with metadata.
