@@ -15,12 +15,24 @@ $module = $PSScriptRoot |Split-Path |Join-Path -ChildPath .publish -AdditionalCh
 $manifest = Import-PowerShellDataFile $module.FullName
 if($manifest.PSObject.Properties.Name -contains 'RequiredModules' -and $manifest.RequiredModules)
 {
-	$manifest.RequiredModules |ForEach-Object {
-		if(!(Get-Module $_ -ListAvailable -wa Ignore))
-		{
-			Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore
+	Write-Output "::group::Found required modules: $($manifest.RequiredModules -join ', ')"
+	try
+	{
+		$manifest.RequiredModules |ForEach-Object {
+			Write-Output "::notice::Module '$_' is required"
+			if(!(Get-Module $_ -ListAvailable -wa Ignore))
+			{
+				Write-Output "::notice::Installing '$_'"
+				Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore
+			}
+			Import-Module $_
 		}
-		Import-Module $_
 	}
+	catch {Write-Output "::error::Trouble loading required modules: $_"}
+	Write-Output "::endgroup::"
+}
+else
+{
+	Write-Output "::notice::No required modules"
 }
 Import-Module $module -Force
