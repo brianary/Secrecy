@@ -10,4 +10,4 @@ $PSScriptRoot |
 	Join-Path -ChildPath .publish -AdditionalChildPath *.psd1 |
 	Get-Item |
 	Split-Path -LeafBase |
-	Remove-Module -Force
+	Remove-Module -Force -ErrorAction Ignore
