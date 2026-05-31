@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-Imports this repository's module, installing and importing required modules first..
+Imports this repository's module, installing and importing required modules first.
 #>
 
 #Requires -Version 7
