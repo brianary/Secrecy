@@ -20,7 +20,7 @@ Process
 	$psd1 = Join-Path .publish *.psd1 |Get-Item
 	& (Join-Path scripts Import-ThisModule.ps1)
 	$manifest = Test-ModuleManifest $psd1.FullName
-	if($manifest.RequiredModules)
+	if($manifest.PSObject.Properties.Name -contains 'RequiredModules' -and $manifest.RequiredModules)
 	{
 		$manifest.RequiredModules.Name |ForEach-Object {
 			Install-PSResource $_ -Scope CurrentUser -Repository PSGallery -TrustRepository -wa Ignore

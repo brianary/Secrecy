@@ -13,7 +13,7 @@ if(!($PSScriptRoot |Split-Path |Join-Path -ChildPath .publish |Test-Path -Type C
 }
 $module = $PSScriptRoot |Split-Path |Join-Path -ChildPath .publish -AdditionalChildPath *.psd1 |Get-Item
 $manifest = Import-PowerShellDataFile $module.FullName
-if($manifest.RequiredModules)
+if($manifest.PSObject.Properties.Name -contains 'RequiredModules' -and $manifest.RequiredModules)
 {
 	$manifest.RequiredModules |ForEach-Object {
 		if(!(Get-Module $_ -ListAvailable -wa Ignore))
