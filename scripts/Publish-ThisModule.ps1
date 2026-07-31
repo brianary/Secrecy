@@ -27,8 +27,8 @@ Process
 			Join-Path .. src public *.ps1 |Get-Item |Split-Path -LeafBase)
 		# see bug https://github.com/PowerShell/PSResourceGet/issues/1806#issuecomment-2992975199
 		Get-PSResourceRepository -Name PSGallery
-		Publish-PSResource -Path *.psd1 -Repository PSGallery -ApiKey $GalleryKey
-		Write-Output ("::notice file=$(Resolve-Path *.psd1 -Relative)," +
+		Publish-PSResource -Path *.psd1 -Repository PSGallery -ApiKey $GalleryKey -DestinationPath ..
+		Write-Output ("::notice file=$(Resolve-Path ../*.nupkg -Relative -RelativeBasePath ..)," +
 			"title=Published::Module version $publishedVersion was published.")
 	}
 }

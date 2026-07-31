@@ -1,39 +1,21 @@
-﻿name: 📦 Publish module to PowerShell Gallery
+﻿name: 📦 Publish module to PowerShell Gallery ⏩
+
 on:
   push:
     tags:
       - v[0-9]*
+
 permissions:
   contents: write
+  security-events: write
+  actions: read
+
 jobs:
-  on-success:
-    name: 🆙 Release new version
-    runs-on: windows-latest
-    steps:
-      - name: 📥 Check out script source
-        uses: actions/checkout@v6
-      - name: 🏭 Build module
-        id: build
-        run: ./scripts/Build-ThisModule.ps1
-      - name: 🏷️ Create release
-        id: release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: 📝 Generate wiki pages
-        id: docs
-        run: ./scripts/Write-Wiki.ps1
-      - name: 📮 Publish wiki
-        id: wiki
-        uses: spenserblack/actions-wiki@v0.3.0
-      - name: 📤 Publish module
-        id: publish
-        env:
-            GALLERYKEY: ${{ secrets.gallerykey }}
-            MODULEVERSION: ${{ github.ref }}
-        run: ./scripts/Publish-ThisModule.ps1
+  call-workflow:
+    uses: brianary/actions/.github/workflows/powershell-gallery-publish.yml@main
+    with:
+        version: ${{ github.ref }}
+    secrets:
+        gallerykey: ${{ secrets.GALLERYKEY }}
+        gh_token: ${{ secrets.GITHUB_TOKEN }}
+
