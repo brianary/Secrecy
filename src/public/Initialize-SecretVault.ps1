@@ -14,7 +14,6 @@ Initialize-SecretVault
 
 #>
 
-#Requires -Version 7
 [CmdletBinding(SupportsShouldProcess=$true,ConfirmImpact='High')] Param(
 # Disable password prompts
 [Alias('Headless')][switch] $HandsFree

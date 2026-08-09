@@ -85,7 +85,7 @@ $($Examples.example |Format-ExampleTest)
 $($CmdInfo.ParameterSets |Where-Object Name -ne __AllParameterSets |Format-ParameterSetContext)
 }
 AfterAll {
-	&"$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
+	&"`$PSScriptRoot/../scripts/Remove-ThisModule.ps1"
 }
 "@
 	}
