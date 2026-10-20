@@ -31,11 +31,11 @@ Begin
 {
 	function Initialize-Charsets
 	{
-		Set-Variable -Name upper -Value ('A'..'Z' |Out-String -NoNewline) -Scope Script -Option Constant
-		Set-Variable -Name lower -Value ('a'..'z' |Out-String -NoNewline) -Scope Script -Option Constant
-		Set-Variable -Name digit -Value ('0'..'9' |Out-String -NoNewline) -Scope Script -Option Constant
-		Set-Variable -Name alphanum -Value "$upper$digit$lower" -Scope Script -Option Constant
-		Set-Variable -Name any -Value "$AllowedSymbols$upper$digit$lower" -Scope Script -Option Constant
+		Set-Variable -Name upper -Value ('A'..'Z' |Out-String -NoNewline) -Scope 1 -Option Constant
+		Set-Variable -Name lower -Value ('a'..'z' |Out-String -NoNewline) -Scope 1 -Option Constant
+		Set-Variable -Name digit -Value ('0'..'9' |Out-String -NoNewline) -Scope 1 -Option Constant
+		Set-Variable -Name alphanum -Value "$upper$digit$lower" -Scope 1 -Option Constant
+		Set-Variable -Name any -Value "$AllowedSymbols$upper$digit$lower" -Scope 1 -Option Constant
 	}
 	function Select-Character
 	{
