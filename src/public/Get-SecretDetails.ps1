@@ -2,14 +2,6 @@
 .SYNOPSIS
 Returns secret info from the secret vaults, including metadata as properties.
 
-.PARAMETER Name
-This parameter takes a String argument, including wildcard characters.
-It is used to filter the search results that match on secret names the provided name pattern.
-If no Name parameter argument is provided, then all stored secret metadata is returned.
-
-.PARAMETER Vault
-Optional parameter which takes a String argument that specifies a single vault to search.
-
 .FUNCTIONALITY
 Credential
 
@@ -27,13 +19,30 @@ Created     : 2024-12-31 00:00:00
 Expires     : 2036-01-01 00:00:00
 #>
 
-[CmdletBinding()] Param()
-DynamicParam
-{
-    Get-SecretInfo |Select-Object -ExpandProperty Name |Add-DynamicParam Name string -Position 0
-    Get-SecretVault |Select-Object -ExpandProperty Name |Add-DynamicParam Vault string -Position 1
-    $DynamicParams
-}
+[CmdletBinding()] Param(
+<#
+This parameter takes a String argument, including wildcard characters.
+It is used to filter the search results that match on secret names the provided name pattern.
+If no Name parameter argument is provided, then all stored secret metadata is returned.
+#>
+[Parameter(Position=0)]
+[ArgumentCompleter({
+	Param($cmd,$param,$value)
+	Get-SecretInfo |
+		Select-Object -ExpandProperty Name |
+		Where-Object {$_ -like "$value*"}
+})]
+[string] $Name,
+# Optional parameter which takes a String argument that specifies a single vault to search.
+[Parameter(Position=1)]
+[ArgumentCompleter({
+	Param($cmd,$param,$value)
+	Get-SecretVault |
+		Select-Object -ExpandProperty Name |
+		Where-Object {$_ -like "$value*"}
+})]
+[string] $Vault
+)
 Process
 {
     Get-SecretInfo @PSBoundParameters |
